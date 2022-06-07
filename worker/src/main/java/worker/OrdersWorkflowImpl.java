@@ -20,7 +20,7 @@ public class OrdersWorkflowImpl implements OrdersWorkflow {
 
         final OrdersActivities activities = Workflow.newActivityStub(OrdersActivities.class,
                 ActivityOptions.newBuilder()
-                        .setStartToCloseTimeout(Duration.ofSeconds(5))
+                        .setStartToCloseTimeout(Duration.ofMinutes(5))
                         .build());
 
         // Check stock
