@@ -1,17 +1,11 @@
 package workflow.common.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Order {
     private String orderId;
     private String accountEmail;
     private String accountAddress;
 
-    @JsonCreator
-    public Order(@JsonProperty("orderId") String orderId,
-            @JsonProperty("accountEmail") String accountEmail,
-            @JsonProperty("accountAddress") String accountAddress) {
+    public Order(String orderId, String accountEmail, String accountAddress) {
         this.setOrderId(orderId);
         this.setAccountEmail(accountEmail);
         this.setAccountAddress(accountAddress);

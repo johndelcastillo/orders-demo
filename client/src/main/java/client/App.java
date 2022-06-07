@@ -3,30 +3,31 @@
  */
 package client;
 
-import io.temporal.api.common.v1.WorkflowExecution;
-import io.temporal.client.WorkflowClient;
-import io.temporal.client.WorkflowClientOptions;
-import io.temporal.client.WorkflowOptions;
-import io.temporal.serviceclient.WorkflowServiceStubs;
-import io.temporal.serviceclient.WorkflowServiceStubsOptions;
+import java.time.Duration;
+
+import com.uber.cadence.WorkflowExecution;
+import com.uber.cadence.client.WorkflowClient;
+import com.uber.cadence.client.WorkflowClientOptions;
+import com.uber.cadence.client.WorkflowOptions;
+import com.uber.cadence.serviceclient.ClientOptions;
+import com.uber.cadence.serviceclient.WorkflowServiceTChannel;
+
 import workflow.common.ConnectionInfo;
 import workflow.common.OrdersWorkflow;
 import workflow.common.domain.Order;
 
 public class App {
     public static void main(String[] args) {
-        String targetString = String.format("%s:%d", ConnectionInfo.HOST, ConnectionInfo.PORT);
-        WorkflowServiceStubsOptions serviceOptions = WorkflowServiceStubsOptions.newBuilder()
-                .setTarget(targetString).build();
-
-        WorkflowServiceStubs service = WorkflowServiceStubs.newServiceStubs(serviceOptions);
-
+        WorkflowServiceTChannel service = new WorkflowServiceTChannel(ClientOptions.newBuilder()
+                .setHost(ConnectionInfo.HOST)
+                .setPort(ConnectionInfo.PORT)
+                .build());
         WorkflowClientOptions clientOptions = WorkflowClientOptions.newBuilder()
-                .setNamespace(ConnectionInfo.NAMESPACE).build();
+                .setDomain(ConnectionInfo.NAMESPACE).build();
         WorkflowClient workflowClient = WorkflowClient.newInstance(service, clientOptions);
-
-        WorkflowOptions workflowOptions = WorkflowOptions.newBuilder()
-                .setTaskQueue(ConnectionInfo.TASK_QUEUE)
+        WorkflowOptions workflowOptions = new WorkflowOptions.Builder()
+                .setTaskList(ConnectionInfo.TASK_QUEUE)
+                .setExecutionStartToCloseTimeout(Duration.ofSeconds(60))
                 .build();
 
         OrdersWorkflow ordersWorkflow = workflowClient.newWorkflowStub(OrdersWorkflow.class, workflowOptions);

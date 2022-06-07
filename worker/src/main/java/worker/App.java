@@ -1,26 +1,27 @@
 package worker;
 
-import io.temporal.client.WorkflowClient;
-import io.temporal.client.WorkflowClientOptions;
-import io.temporal.serviceclient.WorkflowServiceStubs;
-import io.temporal.serviceclient.WorkflowServiceStubsOptions;
-import io.temporal.worker.Worker;
-import io.temporal.worker.WorkerFactory;
+import com.uber.cadence.client.WorkflowClient;
+import com.uber.cadence.client.WorkflowClientOptions;
+import com.uber.cadence.serviceclient.ClientOptions;
+import com.uber.cadence.serviceclient.IWorkflowService;
+import com.uber.cadence.serviceclient.WorkflowServiceTChannel;
+import com.uber.cadence.worker.Worker;
+import com.uber.cadence.worker.WorkerFactory;
+
 import worker.service.NotificationService;
 import worker.service.StockService;
 import workflow.common.ConnectionInfo;
 
 public class App {
-
     public static void main(String[] args) {
-        String targetString = String.format("%s:%d", ConnectionInfo.HOST, ConnectionInfo.PORT);
-        WorkflowServiceStubsOptions serviceOptions = WorkflowServiceStubsOptions.newBuilder()
-                .setTarget(targetString).build();
+        WorkflowClientOptions clientOptions = WorkflowClientOptions.newBuilder().setDomain(ConnectionInfo.NAMESPACE)
+                .build();
 
-        WorkflowServiceStubs service = WorkflowServiceStubs.newServiceStubs(serviceOptions);
+        IWorkflowService service = new WorkflowServiceTChannel(ClientOptions.newBuilder()
+                .setHost(ConnectionInfo.HOST)
+                .setPort(ConnectionInfo.PORT)
+                .build());
 
-        WorkflowClientOptions clientOptions = WorkflowClientOptions.newBuilder()
-                .setNamespace(ConnectionInfo.NAMESPACE).build();
         WorkflowClient workflowClient = WorkflowClient.newInstance(service, clientOptions);
 
         WorkerFactory factory = WorkerFactory.newInstance(workflowClient);
