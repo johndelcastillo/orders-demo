@@ -1,10 +1,9 @@
 package worker;
 
-import io.temporal.activity.ActivityInterface;
-import io.temporal.activity.ActivityMethod;
+import com.uber.cadence.activity.ActivityMethod;
+
 import worker.domain.StockInfo;
 
-@ActivityInterface
 public interface OrdersActivities {
     @ActivityMethod
     StockInfo checkStock(String orderId);

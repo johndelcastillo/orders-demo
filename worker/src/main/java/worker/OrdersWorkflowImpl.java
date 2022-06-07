@@ -5,8 +5,9 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.temporal.activity.ActivityOptions;
-import io.temporal.workflow.Workflow;
+import com.uber.cadence.activity.ActivityOptions;
+import com.uber.cadence.workflow.Workflow;
+
 import worker.domain.StockInfo;
 import workflow.common.OrdersWorkflow;
 import workflow.common.domain.Order;
@@ -19,8 +20,8 @@ public class OrdersWorkflowImpl implements OrdersWorkflow {
     public void processOrder(Order order) {
 
         final OrdersActivities activities = Workflow.newActivityStub(OrdersActivities.class,
-                ActivityOptions.newBuilder()
-                        .setStartToCloseTimeout(Duration.ofMinutes(5))
+                new ActivityOptions.Builder()
+                        .setScheduleToCloseTimeout(Duration.ofMinutes(5))
                         .build());
 
         // Check stock

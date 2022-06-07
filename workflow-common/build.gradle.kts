@@ -23,7 +23,7 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:30.1.1-jre")
-    implementation("io.temporal:temporal-sdk:1.11.0")
+    implementation("com.uber.cadence:cadence-client:3.6.1")
 }
 
 testing {

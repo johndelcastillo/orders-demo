@@ -3,16 +3,12 @@ package worker.domain;
 import java.time.Duration;
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class StockInfo {
     private Boolean inStock;
     private Long restockEta;
     private Duration waitTime;
 
-    @JsonCreator
-    public StockInfo(@JsonProperty("restockEta") Long restockEta) {
+    public StockInfo(Long restockEta) {
         this.setInStock(Instant.ofEpochSecond(restockEta).isBefore(Instant.now()));
         this.setRestockEta(restockEta);
         this.waitTime = Duration.between(Instant.now(), Instant.ofEpochSecond(restockEta));
